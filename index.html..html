@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/taiar/Downloads/desafio_encontros_consonantais.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafio dos Encontros Consonantais</title>
+<style>
+:root{font-family:Arial,sans-serif;color:#20304a;background:#f2f7ff}*{box-sizing:border-box}body{margin:0;padding:18px}.wrap{max-width:760px;margin:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 5px 22px #20304a18}h1{text-align:center;color:#5639a8;font-size:clamp(1.5rem,5vw,2.2rem);margin:4px 0 8px}.sub{text-align:center;margin:0 0 18px}.progress{height:12px;background:#e7e2fa;border-radius:20px;overflow:hidden}.bar{height:100%;width:0;background:#7658d6;transition:width .2s}.count{text-align:center;font-weight:bold;margin:12px}.card{background:#f7f5ff;border:2px solid #e3dcff;border-radius:18px;padding:20px;text-align:center}.emoji{font-size:76px;line-height:1.25}.question{font-size:1.25rem;font-weight:bold;margin:8px 0 16px}.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.options button,.controls button{border:0;border-radius:13px;padding:13px 10px;font-size:1.05rem;font-weight:bold;cursor:pointer}.options button{background:#e8f2ff;color:#213a66;border:2px solid #cbdfff}.options button:focus,.options button:hover{background:#d7e8ff}.options button:disabled{cursor:default;opacity:.8}.controls{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:16px 0}.controls button{background:#6045b5;color:white}.controls button.secondary{background:#16827b}.feedback{min-height:30px;text-align:center;font-size:1.1rem;font-weight:bold;margin:12px 0}.bottom{text-align:center;color:#53627b;font-size:.95rem}.hide{display:none}@media(max-width:420px){body{padding:8px}.wrap{padding:14px}.options{grid-template-columns:1fr}.emoji{font-size:64px}}
+</style></head>
+<body><main class="wrap"><h1>🔎 DESAFIO DOS ENCONTROS CONSONANTAIS</h1><p class="sub">Leia a palavra, observe a figura e escolha a resposta correta!</p><div class="progress"><div class="bar" id="bar" style="width: 0%;"></div></div><div class="count" id="count">Questão 1 de 12</div><section class="card" id="game"><div class="emoji" id="emoji">🧙‍♀️</div><div class="question" id="question">Qual é o nome da figura?</div><div class="options" id="options"><button>BRUXA</button><button>PRINCESA</button><button>BRINCO</button></div><div class="feedback" id="feedback" aria-live="polite"></div></section><div class="controls"><button onclick="speak(false)">🔊 OUVIR A PALAVRA</button><button class="secondary" onclick="speak(true)">🐢 OUVIR DEVAGAR</button><button id="next" onclick="nextQuestion()" disabled="">PRÓXIMA ➜</button></div><div class="bottom" id="score">Acertos: 0</div><section id="finish" class="hide card"><div class="emoji">🏆</div><h2>Parabéns por participar!</h2><p id="result"></p><button class="controls" onclick="restart()" style="background:#6045b5;color:white;border:0;border-radius:12px;padding:12px 20px;font-size:1rem">JOGAR NOVAMENTE</button></section></main>
+<script>
+const items=[
+ {word:'BRUXA',emoji:'🧙‍♀️',opts:['BRUXA','PRINCESA','BRINCO']},
+ {word:'BRAÇO',emoji:'💪',opts:['PRATO','BRAÇO','PEDRA']},
+ {word:'PRATO',emoji:'🍽️',opts:['PRATO','TRATOR','FRUTA']},
+ {word:'PRINCESA',emoji:'👸',opts:['BRUXA','PRINCESA','GRAVATA']},
+ {word:'TREM',emoji:'🚂',opts:['TRATOR','TREM','DRAGÃO']},
+ {word:'TRATOR',emoji:'🚜',opts:['TRATOR','TREM','PRATO']},
+ {word:'GRAMA',emoji:'🌱',opts:['GRAMA','FRIO','PEDRA']},
+ {word:'GRAVATA',emoji:'👔',opts:['BRAÇO','GRAVATA','BRUXA']},
+ {word:'FRUTA',emoji:'🍎',opts:['FRIO','FRUTA','PRATO']},
+ {word:'FRIO',emoji:'🥶',opts:['FRUTA','GRAMA','FRIO']},
+ {word:'DRAGÃO',emoji:'🐉',opts:['DRAGÃO','TREM','BRUXA']},
+ {word:'PEDRA',emoji:'🪨',opts:['PRATO','PEDRA','GRAMA']}
+];let order=[...items],idx=0,score=0,answered=false;
+function render(){answered=false;const x=order[idx];document.getElementById('emoji').textContent=x.emoji;document.getElementById('count').textContent=`Questão ${idx+1} de ${order.length}`;document.getElementById('bar').style.width=`${idx/order.length*100}%`;document.getElementById('feedback').textContent='';document.getElementById('next').disabled=true;const o=document.getElementById('options');o.innerHTML='';[...x.opts].sort(()=>Math.random()-.5).forEach(w=>{const b=document.createElement('button');b.textContent=w;b.onclick=()=>choose(w,b);o.appendChild(b)});document.getElementById('score').textContent=`Acertos: ${score}`;document.getElementById('game').classList.remove('hide');document.getElementById('finish').classList.add('hide')}
+function choose(w,b){if(answered)return;answered=true;const correct=order[idx].word;document.querySelectorAll('.options button').forEach(btn=>btn.disabled=true);if(w===correct){score++;document.getElementById('feedback').textContent='Muito bem! Você acertou! 🎉';document.getElementById('feedback').style.color='#167449'}else{document.getElementById('feedback').textContent=`Quase! A palavra correta é ${correct}. Vamos tentar outra!`;document.getElementById('feedback').style.color='#b04b30'}document.getElementById('score').textContent=`Acertos: ${score}`;document.getElementById('next').disabled=false}
+function speak(slow){const x=order[idx];if(!('speechSynthesis'in window)){alert('O áudio não está disponível neste navegador.');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(x.word.toLowerCase());u.lang='pt-BR';u.rate=slow?.65:.9;speechSynthesis.speak(u)}
+function nextQuestion(){if(idx<order.length-1){idx++;render()}else{document.getElementById('bar').style.width='100%';document.getElementById('game').classList.add('hide');document.getElementById('finish').classList.remove('hide');document.getElementById('count').textContent='Atividade concluída!';document.getElementById('result').textContent=`Você acertou ${score} de ${order.length} questões. Continue praticando a leitura!`;document.getElementById('score').textContent=`Resultado final: ${score}/${order.length}`}}
+function restart(){idx=0;score=0;order=[...items];render()}render();
+</script>
+</body></html>
